@@ -80,15 +80,23 @@ public abstract class AbstractPlay2Mojo extends AbstractMojo {
     }
     
     public File getPlay2() throws MojoExecutionException {
-        String path = getPlay2HomeOrThrow();
-        File play2 = new File(path, "play");
-        if (! play2.exists()) {
+        final String path = getPlay2HomeOrThrow();
+        final File play2;
+        if (isWindows()) {
             play2 = new File(path, "play.bat");
         }
+        else {
+            play2 = new File(path, "play");
+        }
+
         if (! play2.exists()) {
             throw new MojoExecutionException("Can't find the play executable in " + path);
         }
         return play2;
+    }
+
+    private boolean isWindows() {
+        return System.getProperty("os.name").toLowerCase().indexOf("win") != -1;
     }
 
 }
